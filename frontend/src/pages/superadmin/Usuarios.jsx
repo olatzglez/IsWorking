@@ -13,7 +13,8 @@ import "./superadmin.css";
  * Modelo User: { id, company_id, name, email, role, active, remote_allowed }
  */
 
-const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3000";
+// Vacío por defecto: rutas relativas (/api/...), que funcionan con el proxy de Vite y en Render
+const API_URL = import.meta.env.VITE_API_URL ?? "";
 
 const authHeaders = () => {
   const token = localStorage.getItem("token");

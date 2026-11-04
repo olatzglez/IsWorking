@@ -24,7 +24,8 @@ import "./CompanyModal.css";
  *  onSuccess: (company) => void
  */
 
-const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3000";
+// Vacío por defecto: rutas relativas (/api/...), que funcionan con el proxy de Vite y en Render
+const API_URL = import.meta.env.VITE_API_URL ?? "";
 
 const TIMEZONES = [
   "Europe/Madrid", "Europe/London", "Europe/Paris", "Europe/Berlin",

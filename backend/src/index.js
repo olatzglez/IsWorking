@@ -1,6 +1,9 @@
 import express from 'express'
 import dotenv from 'dotenv'
 import cookieParser from 'cookie-parser'
+import path from 'node:path'
+import fs from 'node:fs'
+import { fileURLToPath } from 'node:url'
 
 dotenv.config()
 
@@ -22,6 +25,9 @@ import logsrouter from './routes/logs.routes.js'
 
 const app = express()
 
+// En Render la app va detrás de un proxy: así req.ip devuelve la IP real del cliente
+app.set('trust proxy', 1)
+
 setupAssociations()
 
 app.use(cors({
@@ -41,6 +47,21 @@ app.use('/api/records', recordsRouter)
 app.use('/api/schedules', scheduleRouter)
 app.use('/api/shift-templates', shiftTemplateRouter)
 app.use('/api/logs', logsrouter)
+
+// En producción, el mismo servidor sirve el frontend compilado (frontend/dist).
+// Así frontend y API comparten dominio y las cookies funcionan sin problemas.
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+const frontendDist = path.resolve(__dirname, '../../frontend/dist')
+
+if (fs.existsSync(frontendDist)) {
+  app.use(express.static(frontendDist))
+
+  // Cualquier ruta que no sea de la API devuelve index.html para que React Router la gestione
+  app.use((req, res, next) => {
+    if (req.method !== 'GET' || req.path.startsWith('/api')) return next()
+    res.sendFile(path.join(frontendDist, 'index.html'))
+  })
+}
 
 app.use(notFound)
 app.use(errorHandler)
