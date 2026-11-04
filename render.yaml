@@ -1,6 +1,8 @@
 # Blueprint de Render para IsWorking.
 # Un único servicio web: Express sirve la API (/api) y el frontend compilado (frontend/dist).
-# MongoDB no lo ofrece Render: se usa MongoDB Atlas y su URI se introduce a mano (MONGO_URI).
+# Las bases de datos van fuera de Render, en planes gratuitos que no caducan:
+#   - PostgreSQL en Neon        → su cadena de conexión se introduce a mano (DATABASE_URL)
+#   - MongoDB en MongoDB Atlas  → su cadena de conexión se introduce a mano (MONGO_URI)
 
 services:
   - type: web
@@ -20,9 +22,9 @@ services:
       - key: NODE_ENV
         value: production
       - key: DATABASE_URL
-        fromDatabase:
-          name: isworking-db
-          property: connectionString
+        sync: false
+      - key: DB_SSL
+        value: "true"
       - key: MONGO_URI
         sync: false
       - key: JWT_SECRET
@@ -33,9 +35,3 @@ services:
         value: 15m
       - key: JWT_REFRESH_EXPIRES_IN
         value: 7d
-
-databases:
-  - name: isworking-db
-    plan: free
-    databaseName: isworking
-    user: isworking
