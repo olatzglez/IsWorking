@@ -1,6 +1,7 @@
 # Blueprint de Render para IsWorking.
 # Un único servicio web: Express sirve la API (/api) y el frontend compilado (frontend/dist).
-# Las bases de datos van fuera de Render, en planes gratuitos que no caducan:
+# Las bases de datos van fuera de Render, en planes gratuitos que no caducan,
+# ambas en la región de Fráncfort (AWS eu-central-1):
 #   - PostgreSQL en Neon        → su cadena de conexión se introduce a mano (DATABASE_URL)
 #   - MongoDB en MongoDB Atlas  → su cadena de conexión se introduce a mano (MONGO_URI)
 
@@ -9,6 +10,8 @@ services:
     name: isworking
     runtime: node
     plan: free
+    # Fráncfort: la región más cercana a España y la misma que Neon y Atlas
+    region: frankfurt
     branch: deploy
     buildCommand: >-
       npm ci --include=dev --prefix frontend &&
